@@ -353,25 +353,25 @@ def draw_multiple_ROC(model, fea, label, color='#EA322D', name='All main feature
 if __name__ == "__main__":
     cdir = os.getcwd()
 
-	features=['EGR4_exp', 'PAPPA_exp', 'LRRC3_exp', 'ANXA3_exp','MGMT_exp','MGMT_methylated', 'subtype_Mesenchymal','subtype_Classical', 'subtype_Proneural', 'CDK4_amp', 'CDKN2A/B_del','PDGFRA_amp', 'MDM2_amp', 'EGFR_amp', 'PTEN_del', 'PIK3R1', 'PIK3CA','TP53', 'PDGFRA', 'RB1', 'EGFR', 'PIK3CG', 'ATRX', 'PTEN', 'NF1']
-	label=['Response']
+    features=['EGR4_exp', 'PAPPA_exp', 'LRRC3_exp', 'ANXA3_exp','MGMT_exp','MGMT_methylated', 'subtype_Mesenchymal','subtype_Classical', 'subtype_Proneural', 'CDK4_amp', 'CDKN2A/B_del','PDGFRA_amp', 'MDM2_amp', 'EGFR_amp', 'PTEN_del', 'PIK3R1', 'PIK3CA','TP53', 'PDGFRA', 'RB1', 'EGFR', 'PIK3CG', 'ATRX', 'PTEN', 'NF1']
+    label=['Response']
 
-	train_dir = cdir+"/data/Supplementary File 1.xlsx"
-	test_dir = cdir+"/data/TCGA_testing.csv"
-	survival_dir = cdir+"/data/TCGA_clinical.xlsx"
-	train_data,test_data,test_id = read_data(train_dir,test_dir)
-	train_fea, train_label, test_fea = preprocess(train_data, test_data,method='knn')
-	survival, survival_meth = process_clin(survival_dir,test_id)
-	train_survial = pd.read_csv(train_dir,sheet_name=0)
-	iter_lr=0.74;iter_ss=0.35;iter_th=0.6
-	parameters = {'max_depth':range(3,8),'n_estimators': np.arange(10,60,10)}
-	clf = GridSearchCV(XGBC(learning_rate=iter_lr,subsample=iter_ss,random_state=30), parameters, cv=5, scoring='roc_auc')
-	clf.fit(train_fea, train_label)
-	best_model = clf.best_estimator_
-	test_predict = test_model(best_model, test_fea, th=iter_th)
-	draw_ROC(best_model, train_fea, train_label)
-	draw_survival(test_predict, test_id, survival, survival_meth, th=iter_th)
-	bstb = best_model.get_booster()
-	bstb.save_model('./TMZep_0905.bin')
+    train_dir = cdir+"/data/Supplementary File 1.xlsx"
+    test_dir = cdir+"/data/TCGA_testing.csv"
+    survival_dir = cdir+"/data/TCGA_clinical.xlsx"
+    train_data,test_data,test_id = read_data(train_dir,test_dir)
+    train_fea, train_label, test_fea = preprocess(train_data, test_data,method='knn')
+    survival, survival_meth = process_clin(survival_dir,test_id)
+    train_survial = pd.read_csv(train_dir,sheet_name=0)
+    iter_lr=0.74;iter_ss=0.35;iter_th=0.6
+    parameters = {'max_depth':range(3,8),'n_estimators': np.arange(10,60,10)}
+    clf = GridSearchCV(XGBC(learning_rate=iter_lr,subsample=iter_ss,random_state=30), parameters, cv=5, scoring='roc_auc')
+    clf.fit(train_fea, train_label)
+    best_model = clf.best_estimator_
+    test_predict = test_model(best_model, test_fea, th=iter_th)
+    draw_ROC(best_model, train_fea, train_label)
+    draw_survival(test_predict, test_id, survival, survival_meth, th=iter_th)
+    bstb = best_model.get_booster()
+    bstb.save_model('./TMZep_0905.bin')
 
   
